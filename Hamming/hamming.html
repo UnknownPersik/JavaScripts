@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <title>Hamming code</title>
+    <script>
+        function code(){
+            let message=document.getElementById('inputData').value;
+            let inputDigits=message.split('');
+            let q = /^[01]{4}$/;
+            if (!q.test(message)){
+                alert("Wrong input: Pls type only 0 or 1")
+                return false;
+            }
+            for(let i=0; i<inputDigits.length;i++){
+                inputDigits[i]=inputDigits[i]*1;
+            }
+            inputDigits.push((inputDigits[0]+inputDigits[2]+inputDigits[3])%2);
+            inputDigits.push((inputDigits[0]+inputDigits[1]+inputDigits[3])%2);
+            inputDigits.push((inputDigits[1]+inputDigits[2]+inputDigits[3])%2);
+            document.getElementById('codedData').value=inputDigits.join('');
+        }
+        function decode() {
+            message = document.getElementById('codedData').value;
+            outputDigits = message.split('');
+            let q = /^[01]{7}$/;
+            if (!q.test(message)){
+                alert("Wrong input: Pls type only 0 or 1")
+                return false;
+            }
+            for (let i = 0; i < outputDigits.length; i++) {
+                outputDigits[i] = outputDigits[i] * 1;
+            }
+            let fourthBit = (outputDigits[0]+outputDigits[2]+outputDigits[3])%2;
+            let fifthBit = (outputDigits[0] + outputDigits[1] + outputDigits[3]) % 2;
+            let sixthBit = (outputDigits[1] + outputDigits[2] + outputDigits[3]) % 2;
+            if (fourthBit == outputDigits[4]){
+                if(fifthBit == outputDigits[5]) {
+                    if (sixthBit != outputDigits[6]) {
+                        outputDigits[6] = 1 - outputDigits[6]
+                        alert("Error in 7 bit")
+                    }
+                }
+                else{
+                    if (sixthBit != outputDigits[6]){
+                        outputDigits[1] = 1 - outputDigits[1]
+                        alert("Error in 2 bit")
+                    }
+                    else{
+                        outputDigits[5] = 1 - outputDigits[5]
+                        alert("Error in 6 bit")
+                    }
+                }
+            }
+            else if (fifthBit == outputDigits[5]){
+                if(fourthBit == outputDigits[4]) {
+                    if (sixthBit != outputDigits[6]) {
+                        outputDigits[6] = 1 - outputDigits[6]
+                        alert("Error in 7 bit")
+                    }
+                }
+                else{
+                    if (sixthBit != outputDigits[6]){
+                        outputDigits[2] = 1 - outputDigits[2]
+                        alert("Error in 3 bit")
+                    }
+                    else{
+                        outputDigits[4] = 1 - outputDigits[4]
+                        alert("Error in 5 bit")
+                    }
+                }
+            }
+            else if (sixthBit == outputDigits[6]){
+                if(fourthBit == outputDigits[4]) {
+                    if (fifthBit != outputDigits[5]) {
+                        outputDigits[5] = 1 - outputDigits[5]
+                        alert("Error in 6 bit")
+                    }
+                }
+                else{
+                    if (fifthBit != outputDigits[5]){
+                        outputDigits[0] = 1 - outputDigits[0]
+                        alert("Error in 1 bit")
+                    }
+                    else{
+                        outputDigits[4] = 1 - outputDigits[4]
+                        alert("Error in 5 bit")
+                    }
+                }
+            }
+            else if (sixthBit != outputDigits[6]){
+                if (fourthBit != outputDigits[4]){
+                    if (fifthBit != outputDigits[5]){
+                        outputDigits[3] = 1 - outputDigits[3]
+                        alert("Error in 4 bit")
+                    }
+                }
+            }
+            document.getElementById('decodedData').value=outputDigits.join('');
+        }
+    </script>
+    </head>
+    <body>
+        <p> <input type='text' id="inputData"/> Input data </p>
+        <p> <input type='button' onclick="code()" value="Code"/> </p>
+        <p> <input type='text' id="codedData"/>  Coded data </p>
+        <p> <input type='button' onclick="decode()" value="Decode"/> </p>
+        <p> <input type='text' id="decodedData" /> Decode data </p>
+    </body>
+</html>
