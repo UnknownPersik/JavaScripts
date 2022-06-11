@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title> Game of life with random positions </title>
+</head>
+<body>
+ 
+<canvas id="myCanvas" width="400px" height="400px" style="border:1px solid #c3c3c3;">
+Your browser does not support the canvas element.
+</canvas>
+ 
+  <script>
+	function neighbourCount(x, y){
+		let count = 0;
+		for (let i = -1; i <= 1; i++){
+			for (let j = -1; j <= 1; j++){
+				if (i == 0 && j == 0)
+					continue;
+				else
+					count += currentField[(i + x + fieldSize) % fieldSize][(j + y + fieldSize) % fieldSize];
+			}
+		}
+		return count;
+	}
+ 
+	function nextGeneration(){
+		for(let i = 0; i < fieldSize; i++){
+			for(let j = 0; j < fieldSize; j++){
+				let neighbours = neighbourCount(i, j);
+				if (currentField[i][j] == 1){
+					if (neighbours == 2 || neighbours == 3)
+						nextField[i][j] = 1;
+					else 
+						nextField[i][j] = 0;
+				}
+				else{
+					if (neighbours == 3)
+						nextField[i][j] = 1;
+					else
+						nextField[i][j] = 0;
+				}
+			}
+		}
+		for(let i = 0; i < fieldSize; i++){
+			for(let j = 0; j < fieldSize; j++){
+				currentField[i][j] = nextField[i][j];
+			}
+		}
+		draw();
+	}
+	
+	function draw(){
+		for(let i = 0; i < fieldSize; i++){
+			for(let j = 0; j < fieldSize; j++){
+				if (currentField[i][j] == 1){
+					ctx.fillStyle = "#FF0000";
+					ctx.fillRect(i * cellSize,j * cellSize, cellSize, cellSize);
+				}
+				else{
+					ctx.fillStyle = "#FFFFFF";
+					ctx.fillRect(i * cellSize,j * cellSize, cellSize, cellSize);
+				}
+			}
+		}
+	}
+	
+	let canvas = document.getElementById("myCanvas");
+	let ctx = canvas.getContext("2d"); 
+	let fieldSize = 20;
+	let cellSize = 20;
+	let currentField = new Array(fieldSize);
+	let nextField = new Array(fieldSize);
+	
+	for(let i = 0; i < fieldSize; i++){
+		currentField[i] = new Array(fieldSize);
+		nextField[i] = new Array(fieldSize);
+	};	
+	for(let i = 0; i < fieldSize; i++)
+		for(let j = 0; j < fieldSize; j++){
+			currentField[i][j] = 1 * (Math.random() > 0.5)
+			nextField[i][j] = 0;
+		}
+
+	draw();
+	
+	let tm = setInterval(nextGeneration, 500);
+  </script>
+</body>
+</html>
